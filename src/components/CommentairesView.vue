@@ -1,0 +1,374 @@
+<template>
+  <div>
+    <div class="add-comment">
+      <p class="text-left">Ajouter un commentaire</p>
+      <form @submit.prevent="addComment()" class="form-comment">
+        <textarea
+          class="text-comment"
+          v-model="newComment"
+          placeholder="Entrez votre commentaire ici ..."
+        ></textarea>
+        <button
+          class="btn_commentaire btn btn-success"
+          type="submit"
+          value="Submit"
+        >
+          Envoyer
+        </button>
+      </form>
+    </div>
+
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8"></div>
+        <div class="col-12 col-md-10 col-lg-8" id="OneMessage">
+          <div class="card-card-comments" v-if="hasComments">
+            <div class="card-comments">
+              <div class="comments" v-for="item in oneMessage" :key="item.id">
+                <div class="comments-head d-flex">
+                  <img
+                    :src="item.User.avatar"
+                    width="30"
+                    class="m-0 rounded-circle p-1"
+                  />
+
+                  <p class="font-weight-bold align-self-center text-nom">
+                    poster par {{ item.User.userName }}, le
+                    {{
+                      item.createdAt.slice(0, 10).split("-").reverse().join("/")
+                    }}
+                  </p>
+
+                  <a
+                    @click="deleteComment()"
+                    :href="`#/wall/message/comment/` + item.id"
+                  >
+                    <span :class="{ active: isActive }">
+                      {{ (this.commentID = item.id) }}
+                    </span>
+                    <i class="fa-solid fa-trash-can"></i>
+                  </a>
+                </div>
+                <p class="comment-box">{{ item.comment }}</p>
+              </div>
+            </div>
+          </div>
+          <!-- VOICI UN MESSAGE 
+          <div class="card bg-light my-3" v-if="oneMessage.lenght != 0">
+            <div
+              class="card-header bg-light d-flex align-items-center justify-content-between m-0 p-1"
+            >
+              <div>
+                <img
+                  :src="oneMessage.avatar"
+                  height="40"
+                  class="m-0 rounded-circle"
+                />
+                <span class="small text-dark m-0 p-1">
+                  Posté par {{ oneMessage.userName }}
+                  <span v-if="!oneMessage.isActive" class="small text-danger"
+                    >(supprimé)</span
+                  >, le {{ oneMessage.createdAt }}
+                </span>
+              </div>
+              <div
+                :id="'adus' + oneMessage.id"
+                v-if="
+                  oneMessage.userId == this.currentUserId ||
+                  this.isAdmin == 'true'
+                "
+              >
+                <a :href="'#/message/edit/' + oneMessage.id"
+                  ><img
+                    src="/images/edit.svg"
+                    class="m-1 p-0"
+                    alt="Editer le message"
+                    title="Editer le message"
+                /></a>
+                <a :href="'#/message/drop/' + oneMessage.id"
+                  ><img
+                    src="/images/drop.svg"
+                    class="m-1 p-0"
+                    alt="Supprimer le message"
+                    title="Supprimer le message"
+                /></a>
+              </div>
+            </div>
+            <div
+              class="card-body text-dark text-left"
+              :id="'MessageContainer' + oneMessage.id"
+            >
+              <p class="small" v-if="oneMessage.message !== ''">
+                {{ oneMessage.message }}
+              </p>
+              <img
+                class="w-100"
+                :src="oneMessage.messageUrl"
+                v-if="oneMessage.messageUrl !== ''"
+              />
+            </div>
+            <div class="card-footer bg-light text-dark text-left m-0">
+              <p class="h6 small" v-if="oneMessage.commentaire === 0">
+                Il n'y a aucun commentaire.
+              </p>
+              <p class="h6 small" v-if="oneMessage.commentaire === 1">
+                Il y a 1 commentaire.
+              </p>
+              <p class="h6 small" v-if="oneMessage.commentaire > 1">
+                Il y a {{ oneMessage.commentaire }} commentaires.
+              </p>
+            </div>
+          </div>
+           FIN DU MESSAGE -->
+        </div>
+        <div class="col-12 col-md-10 col-lg-8">
+          <div
+            class="modal fade"
+            id="modalAddComment"
+            tabindex="-1"
+            aria-labelledby="modalAddComment"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <form enctype="multipart/form-data">
+                  <div class="modal-header">
+                    <p class="modal-title h5">Poster un nouveau commentaire</p>
+                  </div>
+                  <div class="row modal-body">
+                    <div class="col-12 justify-content-center form-group">
+                      <label for="newComment" class="sr-only"
+                        >Commentaire :</label
+                      >
+                      <textarea
+                        class="form-control"
+                        v-model="newComment"
+                        id="newComment"
+                        name="comment"
+                        rows="10"
+                        placeholder="Votre commentaire ici..."
+                        required
+                        :class="{ 'is-invalid': submitted && !newComment }"
+                      ></textarea>
+                      <div
+                        v-show="submitted && !newComment"
+                        class="invalid-feedback"
+                      >
+                        Un commentaire est requis !
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <div class="row w-100 justify-content-spacebetween">
+                      <div class="col-6">
+                        <a
+                          data-dismiss="modal"
+                          class="btn btn-secondary btn-block"
+                          >Annuler</a
+                        >
+                      </div>
+                      <div class="col-6">
+                        <button
+                          type="submit"
+                          @click.prevent="addNewComment()"
+                          class="btn btn-success btn-block"
+                        >
+                          Valider
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-10 col-lg-8">
+          <div
+            v-for="comment in comments"
+            :key="comment.id"
+            class="card bg-light my-3"
+          >
+            <div class="card-header align-items-center m-0 p-1">
+              <div class="d-flex justify-content-between">
+                <span class="small text-dark m-0 p-1">
+                  Commentaire de {{ comment.User.userName }}
+                  <span v-if="!comment.User.isActive" class="small text-danger"
+                    >(supprimé)</span
+                  >, le
+                  {{
+                    comment.createdAt
+                      .slice(0, 10)
+                      .split("-")
+                      .reverse()
+                      .join("/")
+                  }}
+                </span>
+                <div
+                  :id="'adcom' + comment.id"
+                  v-if="
+                    comment.UserId == this.currentUserId ||
+                    this.isAdmin == 'true'
+                  "
+                >
+                  <a :href="'#/commentaire/edit/' + comment.id"
+                    ><img
+                      src="/images/edit.svg"
+                      class="m-1 p-0"
+                      alt="Editer le message"
+                      title="Editer le message"
+                  /></a>
+                  <a :href="'#/commentaire/drop/' + comment.id"
+                    ><img
+                      src="/images/drop.svg"
+                      class="m-1 p-0"
+                      alt="Supprimer le message"
+                      title="Supprimer le message"
+                  /></a>
+                </div>
+              </div>
+              <hr class="m-0 p-0 bg-secondary" />
+              <p class="small text-dark m-0 p-1">{{ comment.comment }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+export default {
+  name: "Commentaires-view",
+  data() {
+    return {
+      newComment: null,
+      currentUserId: "",
+      submitted: false,
+      isAdmin: false,
+      isActive: true,
+      oneMessage: [],
+      hasComments: false,
+      comments: [],
+      comment: false,
+      commentID: "",
+    };
+  },
+  methods: {
+    addComment() {
+      if (this.newComment != null) {
+        const id = parseInt(this.$route.params.id);
+        this.submitted = true;
+        this.currentUserId = localStorage.getItem("userId");
+        fetch("http://127.0.0.1:3000/api/comments/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Beare" + localStorage.getItem("token"),
+          },
+          body: JSON.stringify({
+            MessageId: this.$route.params.id,
+            UserId: this.currentUserId,
+            comment: this.newComment,
+          }),
+        });
+
+        fetch(`http://127.0.0.1:3000/api/comments/message/${id}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Beare" + localStorage.getItem("token"),
+          },
+        })
+          .then((data) => data.json())
+          .then((res) => {
+            this.oneMessage = res;
+            if (this.oneMessage.length != 0) {
+              this.hasComments = true;
+            }
+          });
+        this.newComment = null;
+        return;
+      }
+      console.log("comments");
+    },
+    deleteComment() {
+      const id = this.$route.params.id;
+      fetch(`http://127.0.0.1:3000/api/comments/${this.commentID}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Beare" + localStorage.getItem("token"),
+        },
+      }).then((result) => console.log(result));
+      this.$router.push({ path: `/wall/message/${id}`, replace: true });
+      this.comment = true;
+      console.log("delete");
+    },
+  },
+
+  created: function () {
+    const id = parseInt(this.$route.params.id);
+    fetch(`http://127.0.0.1:3000/api/comments/message/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Beare" + localStorage.getItem("token"),
+      },
+    })
+      .then((data) => data.json())
+      .then((res) => {
+        this.oneMessage = res;
+        if (this.oneMessage.length != 0) {
+          this.hasComments = true;
+        }
+        console.log(this.oneMessage.length);
+        for (let item of res) {
+          console.log(item);
+        }
+      });
+  },
+};
+</script>
+
+<style scoped lang="scss">
+.form-comment {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.text-comment {
+  flex: 0.9;
+  border-radius: 15px;
+  padding: 5px;
+}
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid;
+  border-radius: 15px;
+  margin: 10px 5px;
+  background-color: rgb(214, 213, 211);
+  padding: 2px;
+}
+.comment-box {
+  background-color: #fffdfb;
+  width: 100%;
+  text-align: left;
+  margin: 0px;
+  padding-left: 20px;
+  border-radius: 0px 0px 15px 15px;
+}
+.text-nom {
+  margin: 0px 10px 0px 10px;
+}
+svg.svg-inline--fa.fa-trash-can {
+  align-self: center;
+
+  margin-left: 25px;
+  &:hover {
+    color: crimson;
+  }
+}
+.active {
+  display: none;
+}
+</style>
