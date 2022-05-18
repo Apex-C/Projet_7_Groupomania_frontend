@@ -1,7 +1,7 @@
 <template>
   <div class="noMessage">
     <p>Pas de message !</p>
-    <p>Laisser place a notre imagination</p>
+    <p>Laisser place a votre imagination</p>
   </div>
 </template>
 
