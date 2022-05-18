@@ -166,7 +166,6 @@ export default {
             }
           });
         this.newComment = null;
-        return;
       }
       console.log("comments");
     },
