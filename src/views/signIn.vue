@@ -48,8 +48,9 @@
 </template>
 
 <script>
+import axios from "axios";
 import NavHeaderView from "@/components/navHeaderView.vue";
-//import router from "@/router";
+import router from "@/router";
 import FooterView from "@/components/footerView.vue";
 
 export default {
@@ -69,34 +70,26 @@ export default {
   },
   methods: {
     loginToAccompte() {
+      this.submitted = true;
       if (this.email != "" && this.password != "") {
-        fetch(`http://127.0.0.1:3000/api/auth/login`, {
-          method: "post",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-
-          body: JSON.stringify({
+        axios
+          .post("http://127.0.0.1:3000/api/auth/login", {
             email: this.email,
             password: this.password,
-          }),
-        })
-          .then((result) => result.json())
-          .then((data) => {
-            console.log(data);
-            this.curentUser = data;
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("userId", data.userId);
-            localStorage.setItem("userName", data.userName);
-            localStorage.setItem("role", data.role);
-            localStorage.setItem("avatar", data.avatar);
-
-            // router.push("/wall");
+          })
+          .then(function (response) {
+            console.log(response.data);
+            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("userId", response.data.userId);
+            localStorage.setItem("userName", response.data.userName);
+            localStorage.setItem("avatar", response.data.avatar);
+            localStorage.setItem("role", response.data.role);
+            router.push("/wall");
           })
           .catch(function (error) {
-            console.log("une erreur", error);
-            document.getElementById("email-error").innerHTML = error.email;
+            console.log(error.response.data);
+            document.getElementById("email-error").innerHTML =
+              error.response.data;
           });
       }
     },
@@ -116,7 +109,7 @@ export default {
 
 .image-card {
   width: 100%;
-  height: 320px;
+  height: 80vh;
 }
 .bg_img {
   height: inherit;
