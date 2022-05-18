@@ -38,6 +38,9 @@ export default {
     navHeaderViewVue,
     footerView,
   },
+  created: function () {
+    localStorage.clear();
+  },
 };
 </script>
 <style scoped>
