@@ -75,6 +75,7 @@ export default {
   },
   methods: {
     createAcompte() {
+      this.submitted = true;
       const userName = this.pseudo;
       const email = this.email;
       const password = this.password;

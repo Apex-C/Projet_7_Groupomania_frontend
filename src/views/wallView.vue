@@ -15,7 +15,7 @@
         placeholder="Créer un message"
       />
     </div>
-    <NoMessageView v-if="messages.length == 0"></NoMessageView>
+    <NoMessageView v-if="noMessage"></NoMessageView>
 
     <div
       class="modal fade"
@@ -178,23 +178,21 @@ import NavHeaderWallView from "@/components/navHeaderWallView.vue";
 import CommentairesViewVue from "@/components/CommentairesView.vue";
 
 import NoMessageView from "@/components/NoMessageView.vue";
-
-//import router from "@/router";
+import axios from "axios";
+import router from "@/router";
 export default {
   name: "wallView",
   components: {
     NavHeaderWallView,
     CommentairesViewVue,
-
     NoMessageView,
   },
   data() {
     return {
       isAdmin: false,
       currentUserId: "",
-
       noMessage: false,
-
+      isActive: true,
       newImage: "",
       newMessage: "",
       file: null,
@@ -211,27 +209,25 @@ export default {
     onFileChange() {
       this.file = this.$refs.file.files[0];
       this.newImage = URL.createObjectURL(this.file);
-      console.log(this.file);
     },
     addNewMessage() {
       const formData = new FormData();
       formData.set("image", this.file);
       formData.set("UserId", this.currentUserId.toString());
       formData.set("message", this.newMessage.toString());
-
-      fetch("http://127.0.0.1:3000/api/messages/", {
-        method: "POST",
-        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-        body: formData,
-      })
-        .then((res) => res.json())
-        .then((message) => {
+      axios
+        .post("http://127.0.0.1:3000/api/messages/", formData, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then(() => {
           this.UserId = "";
           this.newMessage = "";
           this.file = null;
           location.reload();
-          console.log(message);
         })
+
         .catch((err) => console.log(err));
     },
     commentaire() {
@@ -239,7 +235,7 @@ export default {
       this.comment = true;
     },
 
-    likeRules() {
+    /** likeRules() {
       const likeElt = document.getElementById("like");
       if (this.like == 1) {
         likeElt.style.fill = "black";
@@ -261,15 +257,25 @@ export default {
       this.disLike++;
       likeElt.style.fill = "red";
       if (this.like == 1) this.like--;
-    },
+    },*/
     deleteMessage() {
-      fetch(`http://127.0.0.1:3000/api/messages/${this.$route.params.id}`, {
+      axios
+        .delete("http://127.0.0.1:3000/api/messages/" + this.$route.params.id, {
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            // location.reload();
+            router.push("/wall/");
+          }
+        });
+      /**     fetch(`http://127.0.0.1:3000/api/messages/${this.$route.params.id}`, {
         method: "DELETE",
         headers: { Authorization: "Bearer " + localStorage.getItem("token") },
       }).then((res) => {
         console.log(res);
         location.reload();
-      });
+      }); */
     },
   },
   created: function () {
