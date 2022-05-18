@@ -1,6 +1,6 @@
 # groupomania
 
-Reseau social d'entreprise 🌐
+Reseau social d'entreprise
 
 ## Frontend
 
