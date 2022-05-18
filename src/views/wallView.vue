@@ -15,7 +15,7 @@
         placeholder="Créer un message"
       />
     </div>
-    <NoMessageView v-if="noMessage"></NoMessageView>
+    <NoMessageView v-if="messages.length === 0"></NoMessageView>
 
     <div
       class="modal fade"
@@ -118,7 +118,7 @@
             message.createdAt.slice(11, 16)
           }}
         </span>
-        <a @click="deleteMessage()" :href="'#/wall/message/' + message.id">
+        <a @click="deleteMessage(message.id)">
           <i class="fa-solid fa-trash-can"></i>
         </a>
       </div>
@@ -162,9 +162,7 @@
         </svg>
         <span> {{ disLike }} </span>
       </div>
-      <a @click="commentaire()" :href="'#/wall/message/' + message.id">
-        Commentaires
-      </a>
+      <a @click="commentaire(message.id)"> Commentaires </a>
 
       <CommentairesViewVue
         v-if="comment && message.id == this.$route.params.id"
@@ -180,6 +178,7 @@ import CommentairesViewVue from "@/components/CommentairesView.vue";
 import NoMessageView from "@/components/NoMessageView.vue";
 import axios from "axios";
 import router from "@/router";
+
 export default {
   name: "wallView",
   components: {
@@ -191,7 +190,7 @@ export default {
     return {
       isAdmin: false,
       currentUserId: "",
-      noMessage: false,
+
       isActive: true,
       newImage: "",
       newMessage: "",
@@ -201,7 +200,6 @@ export default {
       comment: false,
       like: 0,
       disLike: 0,
-      messageId: "",
     };
   },
 
@@ -225,14 +223,19 @@ export default {
           this.UserId = "";
           this.newMessage = "";
           this.file = null;
-          location.reload();
+
+          this.loadAllMessages();
+          document
+            .querySelector(".btn.btn-success.btn-block")
+            .setAttribute("data-dismiss", "modal");
         })
 
         .catch((err) => console.log(err));
     },
-    commentaire() {
-      this.messageId = this.$route.params.id;
-      this.comment = true;
+    commentaire(messageId) {
+      console.log(messageId);
+      router.push("/wall/message/" + messageId);
+      this.comment = !this.comment;
     },
 
     /** likeRules() {
@@ -258,15 +261,17 @@ export default {
       likeElt.style.fill = "red";
       if (this.like == 1) this.like--;
     },*/
-    deleteMessage() {
+    deleteMessage(messageId) {
+      console.log(messageId);
       axios
-        .delete("http://127.0.0.1:3000/api/messages/" + this.$route.params.id, {
+        .delete("http://127.0.0.1:3000/api/messages/" + messageId, {
           headers: { Authorization: "Bearer " + localStorage.getItem("token") },
         })
         .then((res) => {
           if (res.status === 200) {
-            // location.reload();
-            router.push("/wall/");
+            //    location.reload();
+            console.log("route");
+            this.loadAllMessages();
           }
         });
       /**     fetch(`http://127.0.0.1:3000/api/messages/${this.$route.params.id}`, {
@@ -276,6 +281,19 @@ export default {
         console.log(res);
         location.reload();
       }); */
+    },
+    loadAllMessages() {
+      fetch("http://127.0.0.1:3000/api/messages/", {
+        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+      })
+        .then((result) => result.json())
+        .then((rest) => {
+          this.messages = rest.allMessages;
+          console.log(this.messages);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
   },
   created: function () {
@@ -294,20 +312,7 @@ export default {
         this.user = data;
       })
       .catch((err) => console.log(err));
-    fetch("http://127.0.0.1:3000/api/messages/", {
-      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-    })
-      .then((result) => result.json())
-      .then((rest) => {
-        if (rest.allMessages.length == 0) {
-          this.noMessage = true;
-        }
-        this.messages = rest.allMessages;
-        console.log(this.messages);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    this.loadAllMessages();
   },
 };
 </script>

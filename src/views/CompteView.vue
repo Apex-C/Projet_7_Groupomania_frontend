@@ -16,10 +16,7 @@
                 style="background-color: ghostwhite"
               >
                 <div class="col-12 col-md-4 text-center">
-                  <img
-                    :src="avatar"
-                    class="image_user rounded-circle image_user"
-                  />
+                  <img :src="avatar" class="image_user rounded-circle" />
                   <a
                     href=""
                     class="btn btn-sm btn-primary mb-2 p-1"
@@ -48,10 +45,7 @@
                         </div>
                         <div class="row modal-body">
                           <div class="col-6 justify-content-center">
-                            <img
-                              :src="avatar"
-                              class="w-100 rounded-circle image_user"
-                            />
+                            <img :src="avatar" class="w-100 rounded-circle" />
                             <p class="small text-center">Photo actuelle</p>
                           </div>
                           <div class="col-6 justify-content-center">
@@ -225,8 +219,6 @@
 </template>
 
 <script>
-import axios from "axios";
-import router from "@/router";
 export default {
   name: "CompteView",
   data() {
@@ -246,74 +238,35 @@ export default {
   methods: {
     onFileChange() {
       this.file = this.$refs.file.files[0];
-      this.newAvatar = URL.createObjectURL(this.file);
+      this.newImage = URL.createObjectURL(this.file);
       console.log(this.file);
     },
     deleteAccount() {
-      axios
-        .put(
-          "http://127.0.0.1:3000/api/users/" + localStorage.getItem("userId"),
-          { isActive: false },
-          {
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("token"),
-            },
-          }
-        )
-        .then(() => localStorage.clear());
-      router.push("/");
-      location.reload();
+      console.log("suprimer");
     },
     updateAvatar() {
-      this.submitted = true;
-      const formData = new FormData();
-      formData.append("image", this.file);
-      axios
-        .put(
-          "http://127.0.0.1:3000/api/users/" + localStorage.getItem("userId"),
-          formData,
-          {
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("token"),
-            },
-          }
-        )
-        .then((res) => {
-          localStorage.setItem("avatar", res.data.avatar);
-          location.reload();
-        });
+      console.log("suprimer");
     },
   },
   created: function () {
     const id = localStorage.getItem("userId");
-    axios
-      .get("http://127.0.0.1:3000/api/users/" + id, {
-        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-      })
-      .then((user) => {
-        this.userName = user.data.userName;
-        this.email = user.data.email;
-        this.role = user.data.role;
-        this.createdAt =
-          user.data.createdAt.slice(0, 10).split("-").reverse().join("/") +
-          " à " +
-          user.data.createdAt.slice(11, 16);
-        this.messagesCount = user.data.messagesCount;
-        this.commentsCount = user.data.commentsCount;
-        this.avatar = user.data.avatar;
-      })
-      .catch(function (error) {
-        const codeError = error.message.split("code ")[1];
-        let messageError = "";
-        switch (codeError) {
-          case "400":
-            messageError = "Vos informations non pas été récuperées !";
-            break;
-          case "401":
-            messageError = "Requête non-authentifiée !";
-            break;
-        }
-        console.log(messageError);
+    fetch(`http://127.0.0.1:3000/api/users/${id}`, {
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        this.userName = data.userName;
+        this.email = data.email;
+        this.createdAt = data.createdAt
+          .slice(0, 10)
+          .split("-")
+          .reverse()
+          .join();
+        this.role = data.role;
+        this.avatar = data.avatar;
+        this.messagesCount = data.messagesCount;
+        this.commentsCount = data.commentsCount;
       });
   },
 };
@@ -322,7 +275,6 @@ export default {
 .image_user {
   height: 110px;
   margin: 15px 15px;
-  object-fit: contain;
 }
 .footer-btn {
   display: flex;

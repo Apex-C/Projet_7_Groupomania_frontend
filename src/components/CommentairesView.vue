@@ -63,7 +63,7 @@
             aria-hidden="true"
           ></div>
         </div>
-        <div class="col-12 col-md-10 col-lg-8">
+        <div class="col-12 col-md-10 col-lg-12">
           <div
             v-for="comment in comments"
             :key="comment.id"
@@ -121,7 +121,7 @@ export default {
   name: "Commentaires-view",
   data() {
     return {
-      newComment: null,
+      newComment: "",
       currentUserId: "",
       submitted: false,
       isAdmin: false,
@@ -143,7 +143,7 @@ export default {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Beare" + localStorage.getItem("token"),
+            Authorization: "Bearer " + localStorage.getItem("token"),
           },
           body: JSON.stringify({
             MessageId: this.$route.params.id,
@@ -155,7 +155,7 @@ export default {
         fetch(`http://127.0.0.1:3000/api/comments/message/${id}`, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Beare" + localStorage.getItem("token"),
+            Authorization: "Bearer " + localStorage.getItem("token"),
           },
         })
           .then((data) => data.json())
@@ -170,39 +170,45 @@ export default {
       console.log("comments");
     },
     deleteComment() {
-      const id = this.$route.params.id;
+      // const id = this.$route.params.id;
       fetch(`http://127.0.0.1:3000/api/comments/${this.commentID}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Beare" + localStorage.getItem("token"),
+          Authorization: "Bearer " + localStorage.getItem("token"),
         },
       }).then((result) => console.log(result));
-      this.$router.push({ path: `/wall/message/${id}`, replace: true });
+      this.loadAllComment();
       this.comment = true;
       console.log("delete");
+    },
+    loadAllComment() {
+      fetch(
+        `http://127.0.0.1:3000/api/comments/message/${this.$route.params.id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
+      )
+        .then((data) => data.json())
+        .then((res) => {
+          this.oneMessage = res;
+          if (this.oneMessage.length != 0) {
+            this.hasComments = true;
+          }
+          console.log(this.oneMessage.length);
+          for (let item of res) {
+            console.log(item);
+          }
+        })
+        .catch((err) => console.log(err));
     },
   },
 
   created: function () {
-    const id = parseInt(this.$route.params.id);
-    fetch(`http://127.0.0.1:3000/api/comments/message/${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Beare" + localStorage.getItem("token"),
-      },
-    })
-      .then((data) => data.json())
-      .then((res) => {
-        this.oneMessage = res;
-        if (this.oneMessage.length != 0) {
-          this.hasComments = true;
-        }
-        console.log(this.oneMessage.length);
-        for (let item of res) {
-          console.log(item);
-        }
-      });
+    this.loadAllComment();
   },
 };
 </script>

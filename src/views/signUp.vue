@@ -75,52 +75,49 @@ export default {
   },
   methods: {
     createAcompte() {
-      this.submitted = true;
       const userName = this.pseudo;
       const email = this.email;
       const password = this.password;
 
-      if (userName != null && password != null && email != null) {
-        fetch("http://127.0.0.1:3000/api/auth/signup", {
-          method: "post",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: userName,
-            email: email,
-            password: password,
-          }),
-        })
-          .then((res) => {
-            if (res.ok) {
-              console.log("tout va bien ");
-              fetch("http://127.0.0.1:3000/api/auth/login", {
-                method: "post",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  email: email,
-                  password: password,
-                }),
+      fetch("http://127.0.0.1:3000/api/auth/signup", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: userName,
+          email: email,
+          password: password,
+        }),
+      })
+        .then((res) => {
+          if (res.ok) {
+            console.log("tout va bien ");
+            fetch("http://127.0.0.1:3000/api/auth/login", {
+              method: "post",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email: email,
+                password: password,
+              }),
+            })
+              .then((rest) => rest.json())
+              .then((response) => {
+                localStorage.setItem("token", response.token);
+                localStorage.setItem("userId", response.userId);
+                localStorage.setItem("userName", response.userName);
+                localStorage.setItem("avatar", response.avatar);
+                localStorage.setItem("role", response.role);
+                router.push("/wall");
               })
-                .then((rest) => rest.json())
-                .then((response) => {
-                  localStorage.setItem("token", response.token);
-                  localStorage.setItem("userId", response.userId);
-                  localStorage.setItem("userName", response.userName);
-                  localStorage.setItem("avatar", response.avatar);
-                  localStorage.setItem("role", response.role);
-                  router.push("/wall");
-                })
-                .catch((err) => console.log("chedli", err));
-            }
-          })
-          .catch((err) => {
-            console.log("hello", err);
-          });
-      }
+              .catch((err) => console.log("chedli", err));
+          }
+        })
+        .catch((err) => {
+          console.log("hello", err);
+        });
     },
     isActife() {
       if (this.pseudo != "" && this.email != "" && this.password != "") {
@@ -138,7 +135,7 @@ export default {
 
 .image-card {
   width: 100%;
-  height: 320px;
+  height: 80vh;
 }
 .bg_img {
   height: inherit;
