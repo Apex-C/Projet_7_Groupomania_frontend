@@ -53,73 +53,6 @@
               </div>
             </div>
           </div>
-          <!-- VOICI UN MESSAGE 
-          <div class="card bg-light my-3" v-if="oneMessage.lenght != 0">
-            <div
-              class="card-header bg-light d-flex align-items-center justify-content-between m-0 p-1"
-            >
-              <div>
-                <img
-                  :src="oneMessage.avatar"
-                  height="40"
-                  class="m-0 rounded-circle"
-                />
-                <span class="small text-dark m-0 p-1">
-                  Posté par {{ oneMessage.userName }}
-                  <span v-if="!oneMessage.isActive" class="small text-danger"
-                    >(supprimé)</span
-                  >, le {{ oneMessage.createdAt }}
-                </span>
-              </div>
-              <div
-                :id="'adus' + oneMessage.id"
-                v-if="
-                  oneMessage.userId == this.currentUserId ||
-                  this.isAdmin == 'true'
-                "
-              >
-                <a :href="'#/message/edit/' + oneMessage.id"
-                  ><img
-                    src="/images/edit.svg"
-                    class="m-1 p-0"
-                    alt="Editer le message"
-                    title="Editer le message"
-                /></a>
-                <a :href="'#/message/drop/' + oneMessage.id"
-                  ><img
-                    src="/images/drop.svg"
-                    class="m-1 p-0"
-                    alt="Supprimer le message"
-                    title="Supprimer le message"
-                /></a>
-              </div>
-            </div>
-            <div
-              class="card-body text-dark text-left"
-              :id="'MessageContainer' + oneMessage.id"
-            >
-              <p class="small" v-if="oneMessage.message !== ''">
-                {{ oneMessage.message }}
-              </p>
-              <img
-                class="w-100"
-                :src="oneMessage.messageUrl"
-                v-if="oneMessage.messageUrl !== ''"
-              />
-            </div>
-            <div class="card-footer bg-light text-dark text-left m-0">
-              <p class="h6 small" v-if="oneMessage.commentaire === 0">
-                Il n'y a aucun commentaire.
-              </p>
-              <p class="h6 small" v-if="oneMessage.commentaire === 1">
-                Il y a 1 commentaire.
-              </p>
-              <p class="h6 small" v-if="oneMessage.commentaire > 1">
-                Il y a {{ oneMessage.commentaire }} commentaires.
-              </p>
-            </div>
-          </div>
-           FIN DU MESSAGE -->
         </div>
         <div class="col-12 col-md-10 col-lg-8">
           <div
@@ -128,60 +61,7 @@
             tabindex="-1"
             aria-labelledby="modalAddComment"
             aria-hidden="true"
-          >
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <form enctype="multipart/form-data">
-                  <div class="modal-header">
-                    <p class="modal-title h5">Poster un nouveau commentaire</p>
-                  </div>
-                  <div class="row modal-body">
-                    <div class="col-12 justify-content-center form-group">
-                      <label for="newComment" class="sr-only"
-                        >Commentaire :</label
-                      >
-                      <textarea
-                        class="form-control"
-                        v-model="newComment"
-                        id="newComment"
-                        name="comment"
-                        rows="10"
-                        placeholder="Votre commentaire ici..."
-                        required
-                        :class="{ 'is-invalid': submitted && !newComment }"
-                      ></textarea>
-                      <div
-                        v-show="submitted && !newComment"
-                        class="invalid-feedback"
-                      >
-                        Un commentaire est requis !
-                      </div>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <div class="row w-100 justify-content-spacebetween">
-                      <div class="col-6">
-                        <a
-                          data-dismiss="modal"
-                          class="btn btn-secondary btn-block"
-                          >Annuler</a
-                        >
-                      </div>
-                      <div class="col-6">
-                        <button
-                          type="submit"
-                          @click.prevent="addNewComment()"
-                          class="btn btn-success btn-block"
-                        >
-                          Valider
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
+          ></div>
         </div>
         <div class="col-12 col-md-10 col-lg-8">
           <div
