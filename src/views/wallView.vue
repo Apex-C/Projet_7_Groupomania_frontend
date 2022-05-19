@@ -119,7 +119,7 @@
             message.createdAt.slice(11, 16)
           }}
         </span>
-        <a @click="deleteMessage(message.id)">
+        <a @click="deleteMessage(message.id)" v-if="message.UserId == user.id">
           <i class="fa-solid fa-trash-can"></i>
         </a>
       </div>
@@ -136,8 +136,7 @@
       <hr class="m-0" />
       <div class="social">
         <svg
-          @click="likeRules()"
-          :href="'#/wall/message/' + message.id"
+          @click="likeRules(message.id)"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
           height="30"
@@ -150,7 +149,7 @@
         </svg>
         <span> {{ like }} </span>
         <svg
-          @click="disLikeRules()"
+          @click="disLikeRules(message.id)"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
           height="30"
@@ -163,6 +162,7 @@
         </svg>
         <span> {{ disLike }} </span>
       </div>
+      <span> </span>
       <a @click="commentaire(message.id)"> Commentaires </a>
 
       <CommentairesViewVue
@@ -220,6 +220,7 @@ export default {
             Authorization: "Bearer " + localStorage.getItem("token"),
           },
         })
+
         .then(() => {
           this.UserId = "";
           this.newMessage = "";
@@ -234,33 +235,9 @@ export default {
     },
     commentaire(messageId) {
       console.log(messageId);
-      this.router.push("/wall/message/" + messageId);
+      this.$router.push("/wall/message/" + messageId);
       this.comment = !this.comment;
     },
-
-    /** likeRules() {
-      const likeElt = document.getElementById("like");
-      if (this.like == 1) {
-        likeElt.style.fill = "black";
-        this.like--;
-        return;
-      }
-      this.like++;
-      likeElt.style.fill = "green";
-      if (this.disLike == 1) this.disLike--;
-    },
-    disLikeRules() {
-      const likeElt = document.getElementById("dislike");
-      if (this.disLike == 1) {
-        likeElt.style.fill = "black";
-        this.disLike--;
-
-        return;
-      }
-      this.disLike++;
-      likeElt.style.fill = "red";
-      if (this.like == 1) this.like--;
-    },*/
     deleteMessage(messageId) {
       console.log(messageId);
       axios
@@ -274,13 +251,6 @@ export default {
             this.loadAllMessages();
           }
         });
-      /**     fetch(`http://127.0.0.1:3000/api/messages/${this.$route.params.id}`, {
-        method: "DELETE",
-        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-      }).then((res) => {
-        console.log(res);
-        location.reload();
-      }); */
     },
     loadAllMessages() {
       fetch("http://127.0.0.1:3000/api/messages/", {
@@ -294,6 +264,34 @@ export default {
         .catch((err) => {
           console.error(err);
         });
+    },
+
+    likeRules(messageId) {
+      console.log(messageId);
+      /**  this.like += 1;
+       const likeElt = document.getElementById("like");
+      if (this.like == 1) {
+        likeElt.style.fill = "black";
+        this.like--;
+        return;
+      }
+      this.like++;
+      likeElt.style.fill = "green";
+      if (this.disLike == 1) this.disLike--; */
+    },
+    disLikeRules(messageId) {
+      console.log(messageId);
+      /**   this.disLike += 1;
+       const likeElt = document.getElementById("dislike");
+      if (this.disLike == 1) {
+        likeElt.style.fill = "black";
+        this.disLike--;
+
+        return;
+      }
+      this.disLike++;
+      likeElt.style.fill = "red";
+      if (this.like == 1) this.like--; */
     },
   },
   created: function () {

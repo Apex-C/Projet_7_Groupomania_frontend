@@ -134,36 +134,6 @@ export default {
     };
   },
   methods: {
-    addComment() {
-      this.submitted = true;
-
-      this.currentUserId = localStorage.getItem("userId");
-      fetch("http://127.0.0.1:3000/api/comments/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-        body: JSON.stringify({
-          MessageId: this.$route.params.id,
-          UserId: this.currentUserId,
-          comment: this.newComment,
-        }),
-      });
-
-      this.loadAllComment();
-      this.newComment = "";
-    },
-    deleteComment() {
-      fetch(`http://127.0.0.1:3000/api/comments/${this.commentID}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-      }).then(() => this.loadAllComment());
-      this.comment = true;
-    },
     loadAllComment() {
       fetch(
         `http://127.0.0.1:3000/api/comments/message/${this.$route.params.id}`,
@@ -186,6 +156,35 @@ export default {
           }
         })
         .catch((err) => console.log(err));
+    },
+    addComment() {
+      this.submitted = true;
+
+      this.currentUserId = localStorage.getItem("userId");
+      fetch("http://127.0.0.1:3000/api/comments/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+        body: JSON.stringify({
+          MessageId: this.$route.params.id,
+          UserId: this.currentUserId,
+          comment: this.newComment,
+        }),
+      });
+      this.loadAllComment();
+      this.newComment = "";
+    },
+    deleteComment() {
+      fetch(`http://127.0.0.1:3000/api/comments/${this.commentID}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      }).then(() => this.loadAllComment());
+      this.comment = true;
     },
   },
 
