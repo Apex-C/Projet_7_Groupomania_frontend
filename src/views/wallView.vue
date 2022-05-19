@@ -91,6 +91,7 @@
                       type="submit"
                       @click.prevent="addNewMessage()"
                       class="btn btn-success btn-block"
+                      data-dismiss="modal"
                     >
                       Valider
                     </button>
@@ -177,7 +178,7 @@ import CommentairesViewVue from "@/components/CommentairesView.vue";
 
 import NoMessageView from "@/components/NoMessageView.vue";
 import axios from "axios";
-import router from "@/router";
+//import router from "@/router";
 
 export default {
   name: "wallView",
@@ -223,18 +224,17 @@ export default {
           this.UserId = "";
           this.newMessage = "";
           this.file = null;
-
-          this.loadAllMessages();
           document
             .querySelector(".btn.btn-success.btn-block")
             .setAttribute("data-dismiss", "modal");
+          this.loadAllMessages();
         })
 
         .catch((err) => console.log(err));
     },
     commentaire(messageId) {
       console.log(messageId);
-      router.push("/wall/message/" + messageId);
+      this.router.push("/wall/message/" + messageId);
       this.comment = !this.comment;
     },
 

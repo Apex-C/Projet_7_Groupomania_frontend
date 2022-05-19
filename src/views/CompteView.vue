@@ -19,7 +19,7 @@
                   <img :src="avatar" class="image_user rounded-circle" />
                   <a
                     href=""
-                    class="btn btn-sm btn-primary mb-2 p-1"
+                    class="btn btn-sm btn-primary p-1"
                     data-toggle="modal"
                     data-target="#modalAvatar"
                     >Changer de photo</a
@@ -45,13 +45,16 @@
                         </div>
                         <div class="row modal-body">
                           <div class="col-6 justify-content-center">
-                            <img :src="avatar" class="w-100 rounded-circle" />
+                            <img
+                              :src="avatar"
+                              class="w-100 rounded-circle image_compte"
+                            />
                             <p class="small text-center">Photo actuelle</p>
                           </div>
                           <div class="col-6 justify-content-center">
                             <img
                               :src="newAvatar"
-                              class="w-100 rounded-circle"
+                              class="w-100 rounded-circle image_compte"
                             />
                             <p class="small text-center">Nouvelle photo</p>
                           </div>
@@ -113,11 +116,8 @@
                   <p class="small text-left m-0 p-1">Votre contenu :</p>
                   <ul>
                     <li class="small text-left m-0 p-1">
-                      <a href="#/compte/messages"
-                        >{{ messagesCount }} message<span
-                          v-if="messagesCount > 1"
-                          >s</span
-                        ></a
+                      {{ messagesCount }} message<span v-if="messagesCount > 1"
+                        >s</span
                       >
                     </li>
                     <li class="small text-left m-0 p-1">
@@ -135,7 +135,7 @@
                 <div class="col-12 footer-btn">
                   <router-link
                     to="/wall"
-                    class="my-2 btn btn-sm btn-block btn-success"
+                    class="btn btn-sm btn-block btn-success link-btn"
                   >
                     retour aux messages</router-link
                   >
@@ -143,7 +143,7 @@
                     href=""
                     data-toggle="modal"
                     data-target="#modalDeleteAccount"
-                    class="btn btn-sm btn-block btn-danger"
+                    class="btn btn-sm btn-block btn-danger link-btn"
                     >Supprimer mon compte !</a
                   >
                 </div>
@@ -219,6 +219,8 @@
 </template>
 
 <script>
+import axios from "axios";
+//import router from "@/router";
 export default {
   name: "CompteView",
   data() {
@@ -231,21 +233,51 @@ export default {
       commentsCount: "",
       avatar: "",
       newAvatar: "",
-      file: null,
+      file: "",
       submitted: false,
     };
   },
   methods: {
     onFileChange() {
       this.file = this.$refs.file.files[0];
-      this.newImage = URL.createObjectURL(this.file);
+      this.newAvatar = URL.createObjectURL(this.file);
       console.log(this.file);
     },
     deleteAccount() {
-      console.log("suprimer");
+      axios
+        .delete(
+          "http://127.0.0.1:3000/api/users/" + localStorage.getItem("userId"),
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        )
+        .then(() => {
+          localStorage.clear();
+          this.$router.push("/");
+        })
+        .catch((err) => console.log(err));
     },
     updateAvatar() {
-      console.log("suprimer");
+      this.submitted = true;
+      const formData = new FormData();
+      formData.append("image", this.file);
+      axios
+        .put(
+          "http://127.0.0.1:3000/api/users/" + localStorage.getItem("userId"),
+          formData,
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        )
+        .then(function (res) {
+          localStorage.setItem("avatar", res.data.avatar);
+
+          location.reload();
+        });
     },
   },
   created: function () {
@@ -276,9 +308,19 @@ export default {
   height: 110px;
   margin: 15px 15px;
 }
+.image_compte {
+  height: 110px;
+  object-fit: contain;
+}
 .footer-btn {
   display: flex;
   align-items: center;
   justify-content: space-around;
+}
+.link-btn {
+  margin: 0 20px;
+}
+a a:hover {
+  text-decoration: none;
 }
 </style>
