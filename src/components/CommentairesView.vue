@@ -135,52 +135,34 @@ export default {
   },
   methods: {
     addComment() {
-      if (this.newComment != null) {
-        const id = parseInt(this.$route.params.id);
-        this.submitted = true;
-        this.currentUserId = localStorage.getItem("userId");
-        fetch("http://127.0.0.1:3000/api/comments/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-          body: JSON.stringify({
-            MessageId: this.$route.params.id,
-            UserId: this.currentUserId,
-            comment: this.newComment,
-          }),
-        });
+      this.submitted = true;
 
-        fetch(`http://127.0.0.1:3000/api/comments/message/${id}`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        })
-          .then((data) => data.json())
-          .then((res) => {
-            this.oneMessage = res;
-            if (this.oneMessage.length != 0) {
-              this.hasComments = true;
-            }
-          });
-        this.newComment = null;
-      }
-      console.log("comments");
+      this.currentUserId = localStorage.getItem("userId");
+      fetch("http://127.0.0.1:3000/api/comments/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+        body: JSON.stringify({
+          MessageId: this.$route.params.id,
+          UserId: this.currentUserId,
+          comment: this.newComment,
+        }),
+      });
+
+      this.loadAllComment();
+      this.newComment = "";
     },
     deleteComment() {
-      // const id = this.$route.params.id;
       fetch(`http://127.0.0.1:3000/api/comments/${this.commentID}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
-      }).then((result) => console.log(result));
-      this.loadAllComment();
+      }).then(() => this.loadAllComment());
       this.comment = true;
-      console.log("delete");
     },
     loadAllComment() {
       fetch(

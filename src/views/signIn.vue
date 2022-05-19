@@ -22,7 +22,7 @@
           id="email"
           placeholder=" example@gmail.com"
         />
-        <p id="email-error"></p>
+
         <label for="password">Mot de passe</label>
         <input
           v-model="password"
@@ -32,6 +32,7 @@
           placeholder=" mot de passe"
         />
       </div>
+      <p id="connexion-error"></p>
       <button
         class="btn btn-primary"
         type="submit"
@@ -71,27 +72,25 @@ export default {
   methods: {
     loginToAccompte() {
       this.submitted = true;
-      if (this.email != "" && this.password != "") {
-        axios
-          .post("http://127.0.0.1:3000/api/auth/login", {
-            email: this.email,
-            password: this.password,
-          })
-          .then(function (response) {
-            console.log(response.data);
-            localStorage.setItem("token", response.data.token);
-            localStorage.setItem("userId", response.data.userId);
-            localStorage.setItem("userName", response.data.userName);
-            localStorage.setItem("avatar", response.data.avatar);
-            localStorage.setItem("role", response.data.role);
-            router.push("/wall");
-          })
-          .catch(function (error) {
-            console.log(error.response.data);
-            document.getElementById("email-error").innerHTML =
-              error.response.data;
-          });
-      }
+
+      axios
+        .post("http://127.0.0.1:3000/api/auth/login", {
+          email: this.email,
+          password: this.password,
+        })
+        .then(function (response) {
+          console.log(response.data);
+          localStorage.setItem("token", response.data.token);
+          localStorage.setItem("userId", response.data.userId);
+          localStorage.setItem("userName", response.data.userName);
+          localStorage.setItem("avatar", response.data.avatar);
+          localStorage.setItem("role", response.data.role);
+          router.push("/wall");
+        })
+        .catch(function (error) {
+          document.getElementById("connexion-error").innerHTML =
+            error.response.data.error;
+        });
     },
     isActife() {
       if (this.email != "" && this.password != "") {
@@ -135,6 +134,9 @@ export default {
 }
 .btn {
   align-self: center;
-  margin-top: 15px;
+  margin-top: 10px;
+}
+#connexion-error {
+  color: red;
 }
 </style>
