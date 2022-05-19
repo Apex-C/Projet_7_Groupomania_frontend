@@ -2,8 +2,8 @@
   <div class="home">
     <navHeaderViewVue />
     <div class="contenaire">
-      <h1>Bienvenue sur le réseau social de l'entreprise 👋</h1>
       <div class="card">
+        <h1>Bienvenue sur le réseau social de l'entreprise 👋</h1>
         <div class="connexion d-flex justify-content-between">
           <p>Pour créer un compte rendez sur la page</p>
           <router-link to="/signup">
@@ -42,15 +42,17 @@ export default {
 </script>
 <style scoped>
 .contenaire {
-  height: 70vh;
+  display: flex;
+  height: 80vh;
   margin: 0;
-  padding: 20px;
+  padding: 30px;
   background-repeat: no-repeat;
-  background-position: 0% 45%;
-  background-image: url("../assets/social-bg-removebg-preview.png");
+  background-size: cover;
+  background-position: 10% 50%;
+  background-image: url(http://localhost:8080/img/social-bg-removebg-preview.120f7487.png);
 }
 h1 {
-  margin: 20px 15px;
+  margin: 10px 15px;
 }
 .card {
   margin: auto;
