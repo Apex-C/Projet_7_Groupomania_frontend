@@ -5,7 +5,7 @@ Reseau social d'entreprise
 ### ⛏️ Built With
 
 - [Vue.Js](https://vuejs.org/)
-- [Bootstrap](https://getbootstrap.com/)
+- [Bootstrap 4](https://getbootstrap.com/)
 - [Axios](https://www.npmjs.com/package/axios)
 
 ## Project setup

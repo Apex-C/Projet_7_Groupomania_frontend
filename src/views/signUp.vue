@@ -34,7 +34,7 @@
           <input
             v-model="password"
             @input="isActife"
-            type="text"
+            type="password"
             id="password"
             placeholder=" mot de passe"
           />
