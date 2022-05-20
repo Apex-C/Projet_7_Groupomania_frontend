@@ -39,7 +39,10 @@
                     }}
                   </p>
 
-                  <a @click="deleteComment()">
+                  <a
+                    @click="deleteComment()"
+                    v-if="item.UserId == currentUserId"
+                  >
                     <span :class="{ active: isActive }">
                       {{ (this.commentID = item.id) }}
                     </span>
@@ -93,7 +96,6 @@ export default {
       isActive: true,
       oneMessage: [],
       hasComments: false,
-      comments: [],
       comment: false,
       commentID: "",
     };
@@ -155,6 +157,7 @@ export default {
 
   created: function () {
     this.loadAllComment();
+    this.currentUserId = localStorage.getItem("userId");
   },
 };
 </script>
