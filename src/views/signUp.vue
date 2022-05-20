@@ -9,7 +9,7 @@
       <div class="card">
         <h1>Créer un compte</h1>
         <p>
-          Vous avez deja un compte
+          Vous avez déjà un compte
           <router-link to="/signin">Connexion</router-link>
         </p>
         <div class="card_body">
@@ -29,7 +29,7 @@
             id="email"
             placeholder=" example@gmail.com"
           />
-          <p id="email-error"></p>
+
           <label for="password">Mot de passe</label>
           <input
             v-model="password"
@@ -39,6 +39,7 @@
             placeholder=" mot de passe"
           />
         </div>
+        <p id="connexion-error"></p>
         <button
           class="btn btn-primary"
           type="submit"
@@ -90,6 +91,9 @@ export default {
           password: password,
         }),
       })
+        .catch((err) => {
+          console.log(err);
+        })
         .then((res) => {
           if (res.ok) {
             console.log("tout va bien ");
@@ -112,11 +116,15 @@ export default {
                 localStorage.setItem("role", response.role);
                 router.push("/wall");
               })
-              .catch((err) => console.log("chedli", err));
+              .catch((error) => {
+                console.log(error);
+                document.getElementById("connexion-error").innerHTML =
+                  error.response.data.error;
+              });
           }
         })
         .catch((err) => {
-          console.log("hello", err);
+          console.log(err);
         });
     },
     isActife() {
