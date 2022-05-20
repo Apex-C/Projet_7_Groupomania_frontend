@@ -39,10 +39,7 @@
                     }}
                   </p>
 
-                  <a
-                    @click="deleteComment()"
-                    :href="`#/wall/message/comment/` + item.id"
-                  >
+                  <a @click="deleteComment()">
                     <span :class="{ active: isActive }">
                       {{ (this.commentID = item.id) }}
                     </span>
@@ -54,15 +51,7 @@
             </div>
           </div>
         </div>
-        <div class="col-12 col-md-10 col-lg-8">
-          <div
-            class="modal fade"
-            id="modalAddComment"
-            tabindex="-1"
-            aria-labelledby="modalAddComment"
-            aria-hidden="true"
-          ></div>
-        </div>
+
         <div class="col-12 col-md-10 col-lg-12">
           <div
             v-for="comment in comments"
@@ -73,9 +62,7 @@
               <div class="d-flex justify-content-between">
                 <span class="small text-dark m-0 p-1">
                   Commentaire de {{ comment.User.userName }}
-                  <span v-if="!comment.User.isActive" class="small text-danger"
-                    >(supprimé)</span
-                  >, le
+                  , le
                   {{
                     comment.createdAt
                       .slice(0, 10)
@@ -84,28 +71,6 @@
                       .join("/")
                   }}
                 </span>
-                <div
-                  :id="'adcom' + comment.id"
-                  v-if="
-                    comment.UserId == this.currentUserId ||
-                    this.isAdmin == 'true'
-                  "
-                >
-                  <a :href="'#/commentaire/edit/' + comment.id"
-                    ><img
-                      src="/images/edit.svg"
-                      class="m-1 p-0"
-                      alt="Editer le message"
-                      title="Editer le message"
-                  /></a>
-                  <a :href="'#/commentaire/drop/' + comment.id"
-                    ><img
-                      src="/images/drop.svg"
-                      class="m-1 p-0"
-                      alt="Supprimer le message"
-                      title="Supprimer le message"
-                  /></a>
-                </div>
               </div>
               <hr class="m-0 p-0 bg-secondary" />
               <p class="small text-dark m-0 p-1">{{ comment.comment }}</p>
