@@ -255,7 +255,7 @@ export default {
         )
         .then(() => {
           localStorage.clear();
-          this.$router.push("/");
+          this.$router.push("/signin");
         })
         .catch((err) => console.log(err));
     },
