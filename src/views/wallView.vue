@@ -119,7 +119,10 @@
             message.createdAt.slice(11, 16)
           }}
         </span>
-        <a @click="deleteMessage(message.id)" v-if="message.UserId == user.id">
+        <a
+          @click="deleteMessage(message.id)"
+          v-if="message.UserId == user.id || isAdmin == true"
+        >
           <i class="fa-solid fa-trash-can"></i>
         </a>
       </div>

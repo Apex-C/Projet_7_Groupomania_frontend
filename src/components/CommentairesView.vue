@@ -41,7 +41,7 @@
 
                   <a
                     @click="deleteComment()"
-                    v-if="item.UserId == currentUserId"
+                    v-if="item.UserId == currentUserId || isAdmin"
                   >
                     <span :class="{ active: isActive }">
                       {{ (this.commentID = item.id) }}
