@@ -1,12 +1,12 @@
-# groupomania
+# Projet-7-Groupomania 🤨
 
 Reseau social d'entreprise
 
-## Frontend
+### ⛏️ Built With
 
-- Framework **Vue.js** avec l'utilisation de **Vue CLI**
-- **Axios**
-- **Bootstrap**
+- [Vue.Js](https://vuejs.org/)
+- [Bootstrap](https://getbootstrap.com/)
+- [Axios](https://www.npmjs.com/package/axios)
 
 ## Project setup
 
