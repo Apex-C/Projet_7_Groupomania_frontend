@@ -104,6 +104,92 @@
       </div>
     </div>
     <div
+      class="modal fade"
+      id="updateModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">
+              Modifier un nouveau message
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="row modal-body">
+            <form method="post" enctype="multipart/form-data">
+              <div class="row modal-body">
+                <div class="col-12 justify-content-center form-group">
+                  <textarea
+                    v-model="newMessage"
+                    class="form-control"
+                    id="newPost"
+                    name="message"
+                    rows="5"
+                    placeholder="Entrez votre message..."
+                  ></textarea>
+                </div>
+                <div
+                  class="col-12 justify-content-center text-center image-box"
+                >
+                  <img :src="newImage" class="rounded new-image" />
+                  <p class="small text-center">Image à partager</p>
+                </div>
+                <div class="col-12justify-content-center m-auto">
+                  <div class="form-group justify-content-center">
+                    <label for="File" class="sr-only"
+                      >Choisir une nouvelle photo</label
+                    >
+                    <input
+                      @change="onFileChange()"
+                      type="file"
+                      ref="file"
+                      name="image"
+                      class="form-control-file"
+                      id="File"
+                      accept=".jpg, .jpeg, .gif, .png"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <div class="row w-100 justify-content-spacebetween">
+                  <div class="col-6">
+                    <button
+                      data-dismiss="modal"
+                      class="btn btn-secondary btn-block"
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                  <div class="col-6">
+                    <button
+                      type="submit"
+                      @click.prevent="addNewMessage()"
+                      class="btn btn-success btn-block"
+                      data-dismiss="modal"
+                    >
+                      Valider
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
       v-for="message in messages"
       :key="message.id"
       class="card bg-light my-3"
@@ -119,6 +205,12 @@
             message.createdAt.slice(11, 16)
           }}
         </span>
+        <a
+          @click="updateMessage(message.id)"
+          data-toggle="modal"
+          data-target="#updateModal"
+          ><i class="fa-solid fa-pen"></i
+        ></a>
         <a
           @click="deleteMessage(message.id)"
           v-if="message.UserId == user.id || isAdmin == true"
@@ -268,6 +360,28 @@ export default {
           console.error(err);
         });
     },
+    updateMessage(messageId) {
+      const formData = new FormData();
+      formData.set("image", this.file);
+      formData.set("UserId", this.currentUserId.toString());
+      formData.set("message", this.newMessage.toString());
+      console.log(messageId);
+      axios
+        .put("http://127.0.0.1:3000/api/messages/" + messageId, formData, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then(() => {
+          this.file = null;
+          document
+            .querySelector(".btn.btn-success.btn-block")
+            .setAttribute("data-dismiss", "modal");
+          this.loadAllMessages();
+        })
+
+        .catch((err) => console.log(err));
+    },
 
     likeRules(messageId) {
       console.log(messageId);
@@ -384,5 +498,11 @@ svg.svg-inline--fa.fa-trash-can {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+svg.svg-inline--fa.fa-pen {
+  margin-left: 20px;
+  &:hover {
+    color: green;
+  }
 }
 </style>
