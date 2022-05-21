@@ -1,4 +1,4 @@
-# Projet-7-Groupomania 🤨
+# Projet-7-Groupomania 
 
 Reseau social d'entreprise
 
