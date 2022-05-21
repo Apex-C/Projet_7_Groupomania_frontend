@@ -115,7 +115,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">
-              Modifier un nouveau message
+              Modifier un message
             </h5>
             <button
               type="button"
@@ -175,7 +175,7 @@
                   <div class="col-6">
                     <button
                       type="submit"
-                      @click.prevent="addNewMessage()"
+                      @click.prevent="updateMessage()"
                       class="btn btn-success btn-block"
                       data-dismiss="modal"
                     >
@@ -206,9 +206,10 @@
           }}
         </span>
         <a
-          @click="updateMessage(message.id)"
+          @click="getMessageId(message.id)"
           data-toggle="modal"
           data-target="#updateModal"
+          v-if="message.UserId == user.id || isAdmin == true"
           ><i class="fa-solid fa-pen"></i
         ></a>
         <a
@@ -286,7 +287,7 @@ export default {
     return {
       isAdmin: false,
       currentUserId: "",
-
+      messageId: "",
       isActive: true,
       newImage: "",
       newMessage: "",
@@ -303,6 +304,11 @@ export default {
     onFileChange() {
       this.file = this.$refs.file.files[0];
       this.newImage = URL.createObjectURL(this.file);
+    },
+    getMessageId(id) {
+      this.messageId = id;
+      console.log(this.messageId);
+      this.$router.push("/wall/message/" + id);
     },
     addNewMessage() {
       const formData = new FormData();
@@ -360,14 +366,14 @@ export default {
           console.error(err);
         });
     },
-    updateMessage(messageId) {
+    updateMessage() {
       const formData = new FormData();
       formData.set("image", this.file);
       formData.set("UserId", this.currentUserId.toString());
       formData.set("message", this.newMessage.toString());
-      console.log(messageId);
+      // console.log(messageId);
       axios
-        .put("http://127.0.0.1:3000/api/messages/" + messageId, formData, {
+        .put("http://127.0.0.1:3000/api/messages/" + this.messageId, formData, {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
           },
