@@ -17,6 +17,70 @@
         </button>
       </form>
     </div>
+    <div
+      class="modal fade"
+      id="updateModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">
+              Modifier un commentaire
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="row modal-body">
+            <form method="post" enctype="multipart/form-data">
+              <div class="row modal-body">
+                <div class="col-12 justify-content-center form-group">
+                  <textarea
+                    v-model="newComment"
+                    class="form-control"
+                    id="newPost"
+                    name="message"
+                    rows="5"
+                    placeholder="Entrez votre message..."
+                  ></textarea>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <div class="row w-100 justify-content-spacebetween">
+                  <div class="col-6">
+                    <button
+                      data-dismiss="modal"
+                      class="btn btn-secondary btn-block"
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                  <div class="col-6">
+                    <button
+                      type="submit"
+                      @click.prevent="addNewComment()"
+                      class="btn btn-success btn-block"
+                      data-dismiss="modal"
+                    >
+                      Valider
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="container">
       <div class="row justify-content-center">
@@ -38,6 +102,13 @@
                       item.createdAt.slice(0, 10).split("-").reverse().join("/")
                     }}
                   </p>
+
+                  <a
+                    @click="updateComment(item.id)"
+                    data-toggle="modal"
+                    data-target="#updateModal"
+                    ><i class="fa-solid fa-pen"></i
+                  ></a>
 
                   <a
                     @click="deleteComment()"
