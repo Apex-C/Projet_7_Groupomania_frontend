@@ -19,7 +19,7 @@
     </div>
     <div
       class="modal fade"
-      id="updateModal"
+      id="updateCommentModal"
       tabindex="-1"
       role="dialog"
       aria-labelledby="exampleModalLabel"
@@ -28,7 +28,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">
+            <h5 class="modal-title" id="updateCommentModal">
               Modifier un commentaire
             </h5>
             <button
@@ -41,7 +41,7 @@
             </button>
           </div>
           <div class="row modal-body">
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data" class="w-100">
               <div class="row modal-body">
                 <div class="col-12 justify-content-center form-group">
                   <textarea
@@ -49,7 +49,6 @@
                     class="form-control"
                     id="newPost"
                     name="message"
-                    rows="5"
                     placeholder="Entrez votre message..."
                   ></textarea>
                 </div>
@@ -67,7 +66,7 @@
                   <div class="col-6">
                     <button
                       type="submit"
-                      @click.prevent="addNewComment()"
+                      @click.prevent="updateComment()"
                       class="btn btn-success btn-block"
                       data-dismiss="modal"
                     >
@@ -104,9 +103,9 @@
                   </p>
 
                   <a
-                    @click="updateComment(item.id)"
+                    v-if="item.UserId == currentUserId || isAdmin == true"
                     data-toggle="modal"
-                    data-target="#updateModal"
+                    data-target="#updateCommentModal"
                     ><i class="fa-solid fa-pen"></i
                   ></a>
 
@@ -156,6 +155,7 @@
   </div>
 </template>
 <script>
+//import axios from "axios";
 export default {
   name: "Commentaires-view",
   data() {
@@ -224,6 +224,23 @@ export default {
       }).then(() => this.loadAllComment());
       this.comment = true;
     },
+    updateComment() {
+      fetch(`http://127.0.0.1:3000/api/comments/${this.commentID}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+        body: JSON.stringify({
+          comment: this.newComment,
+        }),
+      })
+        .then(() => {
+          this.newComment = "";
+          this.loadAllComment();
+        })
+        .catch((err) => console.log(err));
+    },
   },
 
   created: function () {
@@ -273,6 +290,7 @@ svg.svg-inline--fa.fa-trash-can {
     color: crimson;
   }
 }
+
 .active {
   display: none;
 }
