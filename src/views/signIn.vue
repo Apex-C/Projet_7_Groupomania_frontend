@@ -13,6 +13,7 @@
         Pas encore de compte
         <router-link to="/signup">Créer un compte</router-link>
       </p>
+      <form @submit.prevent.=""></form>
       <div class="card_body">
         <label for="email">Email</label>
         <input
@@ -38,6 +39,7 @@
         type="submit"
         value="Connexion"
         :disabled="isDisabled"
+        @keyup.enter="loginToAccompte"
         @click="loginToAccompte"
       >
         Connexion
@@ -88,8 +90,30 @@ export default {
           router.push("/wall");
         })
         .catch(function (error) {
-          document.getElementById("connexion-error").innerHTML =
-            error.response.data.error;
+          const eltError = document.getElementById("connexion-error");
+          const codeError = error.message.split("code ")[1];
+          let messageError = "";
+          switch (codeError) {
+            case "401":
+              console.log(error);
+              messageError = error.response.data.error;
+              break;
+            case "402":
+              console.log(error);
+              messageError = error;
+              break;
+
+            case "403":
+              console.log(error);
+              messageError = error;
+              break;
+            case "404":
+              console.log(error);
+              messageError = error;
+              break;
+          }
+          eltError.style.color = "red";
+          eltError.innerHTML = messageError;
         });
     },
     isActife() {

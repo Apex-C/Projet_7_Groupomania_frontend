@@ -295,6 +295,7 @@ export default {
       messages: [],
       user: [],
       comment: false,
+      oneMessage: [],
       like: 0,
       disLike: 0,
     };
@@ -329,6 +330,7 @@ export default {
           document
             .querySelector(".btn.btn-success.btn-block")
             .setAttribute("data-dismiss", "modal");
+
           this.loadAllMessages();
         })
 
@@ -347,7 +349,6 @@ export default {
         })
         .then((res) => {
           if (res.status === 200) {
-            //    location.reload();
             console.log("route");
             this.loadAllMessages();
           }
@@ -371,7 +372,7 @@ export default {
       formData.set("image", this.file);
       formData.set("UserId", this.currentUserId.toString());
       formData.set("message", this.newMessage.toString());
-      // console.log(messageId);
+
       axios
         .put("http://127.0.0.1:3000/api/messages/" + this.messageId, formData, {
           headers: {

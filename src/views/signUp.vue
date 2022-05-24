@@ -12,43 +12,45 @@
           Vous avez déjà un compte
           <router-link to="/signin">Connexion</router-link>
         </p>
-        <div class="card_body">
-          <label for="pseudo">pseudo</label>
-          <input
-            v-model="pseudo"
-            @input="isActife"
-            type="text"
-            id="pseudo"
-            placeholder=" pseudo"
-          />
-          <label for="email">Email</label>
-          <input
-            v-model="email"
-            @input="isActife"
-            type="text"
-            id="email"
-            placeholder=" example@gmail.com"
-          />
+        <form @submit.prevent="">
+          <div class="contenaire card_body">
+            <label for="pseudo">pseudo</label>
+            <input
+              v-model="pseudo"
+              @input="isActife"
+              type="text"
+              id="pseudo"
+              placeholder=" pseudo"
+            />
+            <label for="email">Email</label>
+            <input
+              v-model="email"
+              @input="isActife"
+              type="text"
+              id="email"
+              placeholder=" example@gmail.com"
+            />
 
-          <label for="password">Mot de passe</label>
-          <input
-            v-model="password"
-            @input="isActife"
-            type="password"
-            id="password"
-            placeholder=" mot de passe"
-          />
-        </div>
-        <p id="connexion-error"></p>
-        <button
-          class="btn btn-primary"
-          type="submit"
-          value="Connexion"
-          @click="createAcompte"
-          :disabled="isDisabled"
-        >
-          Connexion
-        </button>
+            <label for="password">Mot de passe</label>
+            <input
+              v-model="password"
+              @input="isActife"
+              type="password"
+              id="password"
+              placeholder=" mot de passe"
+            />
+          </div>
+          <p id="connexion-error"></p>
+          <button
+            class="btn btn-primary"
+            type="submit"
+            value="Connexion"
+            @click="createAcompte"
+            :disabled="isDisabled"
+          >
+            Connexion
+          </button>
+        </form>
       </div>
     </div>
     <FooterView />
@@ -57,6 +59,7 @@
 
 <script>
 import NavHeaderView from "@/components/navHeaderView.vue";
+import axios from "axios";
 import router from "@/router";
 import FooterView from "../components/footerView.vue";
 
@@ -80,51 +83,50 @@ export default {
       const email = this.email;
       const password = this.password;
 
-      fetch("http://127.0.0.1:3000/api/auth/signup", {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      axios
+        .post("http://127.0.0.1:3000/api/auth/signup", {
           name: userName,
           email: email,
           password: password,
-        }),
-      })
-        .catch((err) => {
-          console.log(err);
         })
-        .then((res) => {
-          if (res.ok) {
-            console.log("tout va bien ");
-            fetch("http://127.0.0.1:3000/api/auth/login", {
-              method: "post",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
+        .then(function (response) {
+          console.log(response);
+          if (response.statusText === "Created") {
+            console.log("ok");
+            axios
+              .post("http://127.0.0.1:3000/api/auth/login", {
                 email: email,
                 password: password,
-              }),
-            })
-              .then((rest) => rest.json())
-              .then((response) => {
-                localStorage.setItem("token", response.token);
-                localStorage.setItem("userId", response.userId);
-                localStorage.setItem("userName", response.userName);
-                localStorage.setItem("avatar", response.avatar);
-                localStorage.setItem("role", response.role);
-                router.push("/wall");
               })
-              .catch((error) => {
-                console.log(error);
-                document.getElementById("connexion-error").innerHTML =
-                  error.response.data.error;
+
+              .then((response) => {
+                console.log(response);
+                localStorage.setItem("token", response.data.token);
+                localStorage.setItem("userId", response.data.userId);
+                localStorage.setItem("userName", response.data.userName);
+                localStorage.setItem("avatar", response.data.avatar);
+                localStorage.setItem("role", response.data.role);
+                router.push("/wall");
               });
           }
         })
-        .catch((err) => {
-          console.log(err);
+
+        .catch(function (error) {
+          const eltError = document.getElementById("connexion-error");
+          const codeError = error.message.split("code ")[1];
+          let messageError = "";
+          switch (codeError) {
+            case "401":
+              console.log(error.response.data.error.errors[0].message);
+              messageError = error.response.data.error.errors[0].message;
+              break;
+            case "402":
+              console.log(error.response.data.error);
+              messageError = error.response.data.error;
+              break;
+          }
+          eltError.style.color = "red";
+          eltError.innerHTML = messageError;
         });
     },
     isActife() {
@@ -166,6 +168,13 @@ export default {
   height: 155px;
   justify-content: space-evenly;
   margin-bottom: 10px;
+}
+#connexion-error {
+  font-size: 10px;
+  width: 200px;
+  color: red;
+  padding: 10px;
+  margin: 0px auto;
 }
 .btn {
   align-self: center;
