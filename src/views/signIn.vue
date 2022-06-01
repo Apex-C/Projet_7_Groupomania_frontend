@@ -13,7 +13,7 @@
         Pas encore de compte
         <router-link to="/signup">Créer un compte</router-link>
       </p>
-      <form @submit.prevent.=""></form>
+      <form @submit.prevent.="loginToAccompte"></form>
       <div class="card_body">
         <label for="email">Email</label>
         <input
@@ -40,7 +40,6 @@
         value="Connexion"
         :disabled="isDisabled"
         @keyup.enter="loginToAccompte"
-        @click="loginToAccompte"
       >
         Connexion
       </button>
@@ -146,7 +145,7 @@ export default {
   width: fit-content;
   margin: auto;
   position: absolute;
-  top: 70px;
+  top: 100px;
   right: 20px;
 }
 .card_body {

@@ -158,7 +158,7 @@ export default {
   background-color: rgb(188 188 227);
 
   position: absolute;
-  top: 5px;
+  top: 25px;
   right: 20px;
 }
 .card_body {
