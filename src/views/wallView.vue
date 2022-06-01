@@ -296,7 +296,7 @@ export default {
       user: [],
       comment: false,
       oneMessage: [],
-      like: 0,
+      like: false,
       disLike: 0,
     };
   },
@@ -393,13 +393,17 @@ export default {
 
     likeRules(messageId) {
       console.log(messageId);
-      if (this.like === 0 || this.like === -1) {
-        this.like = 1;
-        this.disLike = 0;
-      } else {
-        this.like = -1;
-        this.disLike = 0;
-      }
+
+      this.like = !this.like;
+
+      fetch(`http://127.0.0.1:3000/api/likeMessage/${this.currentUserId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+        body: JSON.stringify({ like: this.like, messageId: messageId }),
+      });
     },
     disLikeRules(messageId) {
       console.log(messageId);
