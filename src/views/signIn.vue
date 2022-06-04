@@ -22,6 +22,7 @@
           type="text"
           id="email"
           placeholder=" example@gmail.com"
+          required
         />
 
         <label for="password">Mot de passe</label>
@@ -31,6 +32,7 @@
           type="password"
           id="password"
           placeholder=" mot de passe"
+          required
         />
       </div>
       <p id="connexion-error"></p>

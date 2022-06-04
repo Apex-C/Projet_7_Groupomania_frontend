@@ -21,6 +21,7 @@
               type="text"
               id="pseudo"
               placeholder=" pseudo"
+              required
             />
             <label for="email">Email</label>
             <input
@@ -29,6 +30,7 @@
               type="text"
               id="email"
               placeholder=" example@gmail.com"
+              required
             />
 
             <label for="password">Mot de passe</label>
@@ -38,6 +40,7 @@
               type="password"
               id="password"
               placeholder=" mot de passe"
+              required
             />
           </div>
           <p id="connexion-error"></p>
