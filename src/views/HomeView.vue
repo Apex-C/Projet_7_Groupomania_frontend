@@ -49,7 +49,7 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 10% 50%;
-  background-image: url(http://localhost:8080/img/social-bg-removebg-preview.120f7487.png);
+  background-image: url("../assets/social-bg-removebg-preview.png");
 }
 h1 {
   margin: 10px 15px;

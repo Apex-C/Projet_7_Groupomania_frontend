@@ -13,38 +13,37 @@
         Pas encore de compte
         <router-link to="/signup">Créer un compte</router-link>
       </p>
-      <form @submit.prevent.="loginToAccompte"></form>
-      <div class="card_body">
-        <label for="email">Email</label>
-        <input
-          v-model="email"
-          @input="isActife"
-          type="text"
-          id="email"
-          placeholder=" example@gmail.com"
-          required
-        />
+      <form @submit.prevent="loginToAccompte()">
+        <div class="card_body">
+          <label for="email">Email</label>
+          <input
+            v-model="email"
+            @input="isActife"
+            type="text"
+            id="email"
+            placeholder=" example@gmail.com"
+          />
 
-        <label for="password">Mot de passe</label>
-        <input
-          v-model="password"
-          @input="isActife"
-          type="password"
-          id="password"
-          placeholder=" mot de passe"
-          required
-        />
-      </div>
-      <p id="connexion-error"></p>
-      <button
-        class="btn btn-primary"
-        type="submit"
-        value="Connexion"
-        :disabled="isDisabled"
-        @keyup.enter="loginToAccompte"
-      >
-        Connexion
-      </button>
+          <label for="password">Mot de passe</label>
+          <input
+            v-model="password"
+            @input="isActife"
+            type="password"
+            id="password"
+            placeholder=" mot de passe"
+          />
+        </div>
+        <p id="connexion-error"></p>
+        <button
+          class="btn btn-primary"
+          type="submit"
+          value="Connexion"
+          :disabled="isDisabled"
+          @keyup.enter="loginToAccompte"
+        >
+          Connexion
+        </button>
+      </form>
     </div>
 
     <FooterView />

@@ -12,7 +12,7 @@
           Vous avez déjà un compte
           <router-link to="/signin">Connexion</router-link>
         </p>
-        <form @submit.prevent="">
+        <form @submit.prevent="createAcompte()">
           <div class="contenaire card_body">
             <label for="pseudo">pseudo</label>
             <input
@@ -48,7 +48,7 @@
             class="btn btn-primary"
             type="submit"
             value="Connexion"
-            @click="createAcompte"
+            @keyup.enter="createAcompte"
             :disabled="isDisabled"
           >
             Connexion

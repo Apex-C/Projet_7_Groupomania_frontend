@@ -166,6 +166,7 @@ export default {
       isAdmin: false,
       isActive: true,
       oneMessage: [],
+
       hasComments: false,
       comment: false,
       commentID: "",
@@ -184,6 +185,7 @@ export default {
       )
         .then((data) => data.json())
         .then((res) => {
+          console.log(res);
           this.oneMessage = res;
           if (this.oneMessage.length != 0) {
             this.hasComments = true;
