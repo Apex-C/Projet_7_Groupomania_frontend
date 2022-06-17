@@ -11,14 +11,14 @@
         type="input"
         class="justify-content-center col-10 rounded"
         data-toggle="modal"
-        data-target="#createMessage"
+        data-target="#modal"
         placeholder="Créer un message"
       />
     </div>
     <NoMessageView v-if="messages.length === 0"></NoMessageView>
     <div
       class="modal fade"
-      id="createMessage"
+      id="modal"
       tabindex="-2"
       role="dialog"
       aria-labelledby="exampleModalLabel"
@@ -27,92 +27,10 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Creer un message</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="row modal-body">
-            <form method="post" enctype="multipart/form-data">
-              <div class="row modal-body">
-                <div class="col-12 justify-content-center form-group">
-                  <textarea
-                    v-model="newMessage"
-                    class="form-control"
-                    id="newPost"
-                    name="message"
-                    rows="5"
-                    placeholder="Entrez votre message..."
-                  ></textarea>
-                </div>
-                <div
-                  class="col-12 justify-content-center text-center image-box"
-                >
-                  <img :src="newImage" class="rounded new-image" />
-                  <p class="small text-center">Image à partager</p>
-                </div>
-                <div class="col-12justify-content-center m-auto">
-                  <div class="form-group justify-content-center">
-                    <label for="File" class="sr-only"
-                      >Choisir une nouvelle photo</label
-                    >
-                    <input
-                      @change="onFileChange()"
-                      type="file"
-                      ref="file"
-                      name="image"
-                      class="form-control-file"
-                      id="File"
-                      accept=".jpg, .jpeg, .gif, .png"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <div class="row w-100 justify-content-spacebetween">
-                  <div class="col-6">
-                    <button
-                      data-dismiss="modal"
-                      class="btn btn-secondary btn-block"
-                    >
-                      Annuler
-                    </button>
-                  </div>
-                  <div class="col-6">
-                    <button
-                      type="submit"
-                      @click.prevent="addNewMessage()"
-                      class="btn btn-success btn-block"
-                      data-dismiss="modal"
-                    >
-                      Valider
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div
-      class="modal fade"
-      id="updateModal"
-      tabindex="-2"
-      role="dialog"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">
+            <h5 class="modal-title" id="exampleModalLabel" v-if="mode == ''">
+              Creer un message
+            </h5>
+            <h5 class="modal-title" id="exampleModalLabel" v-else>
               Modifier un message
             </h5>
             <button
@@ -166,18 +84,29 @@
                     <button
                       data-dismiss="modal"
                       class="btn btn-secondary btn-block"
+                      @click="mode = ''"
                     >
                       Annuler
                     </button>
                   </div>
                   <div class="col-6">
                     <button
+                      v-if="mode == ''"
+                      type="submit"
+                      @click.prevent="addNewMessage()"
+                      class="btn btn-success btn-block"
+                      data-dismiss="modal"
+                    >
+                      Valider
+                    </button>
+                    <button
+                      v-if="mode == 'update'"
                       type="submit"
                       @click.prevent="updateMessage()"
                       class="btn btn-success btn-block"
                       data-dismiss="modal"
                     >
-                      Valider
+                      Mettre à jour
                     </button>
                   </div>
                 </div>
@@ -187,6 +116,7 @@
         </div>
       </div>
     </div>
+
     <div
       v-for="message in messages"
       :key="message.id"
@@ -205,9 +135,9 @@
         </span>
         <a
           v-if="message.UserId == user.id || isAdmin == true"
-          @click="getMessageId(message.id)"
+          @click="updateModal(message.id)"
           data-toggle="modal"
-          data-target="#updateModal"
+          data-target="#modal"
           ><i class="fa-solid fa-pen"></i
         ></a>
         <a
@@ -288,11 +218,12 @@ export default {
       isActive: true,
       newImage: "",
       newMessage: "",
-      file: null,
+      file: [],
       messages: [],
       user: [],
       comment: false,
       oneMessage: [],
+      mode: "",
     };
   },
 
@@ -305,6 +236,12 @@ export default {
       this.messageId = id;
       console.log(this.messageId);
       this.$router.push("/wall/message/" + id);
+    },
+    updateModal(id) {
+      this.messageId = id;
+      console.log(this.messageId);
+      this.$router.push("/wall/message/" + id);
+      this.mode = "update";
     },
     addNewMessage() {
       const formData = new FormData();
